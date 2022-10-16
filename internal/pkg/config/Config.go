@@ -17,41 +17,48 @@
 // You should have received a copy of the GNU General Public License
 // along with rqmgtool.  If not, see <https://www.gnu.org/licenses/>.
 
-package main
+package config
 
 import (
-	"flag"
 	"fmt"
 	"os"
 
-	"github.com/florath/rqmgtool/internal/pkg/config"
+	"gopkg.in/yaml.v3"
 )
 
-func main() {
-	fmt.Println("+++ rqmgtool starting")
+type RequirementsInputConfig struct {
+	Default_language string
+}
 
-	var configFile string
-	var dataDir string
+type RequirementsConfig struct {
+	Input RequirementsInputConfig
+	Inventors []string `yaml:"inventors,flow"`
+	Stakeholders []string `yaml:"stakeholders,flow"`
+}
 
-	flag.StringVar(&configFile, "config", "", "config file name")
-	flag.StringVar(&dataDir, "dataDir", "", "directory of the requirements data")
-	flag.Parse()
+type Config struct {
+	Type string
+	Requirements RequirementsConfig
+}
 
-	if len(configFile) == 0 || len(dataDir) == 0 {
-		fmt.Println("Usage: rqmgtool")
-		flag.PrintDefaults()
-		os.Exit(1)
+func NewConfig(configFile string) *Config {
+	data, err := os.ReadFile(configFile)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Print(string(data))
+	fmt.Println("------------------ END ----------------")
+
+	config := new(Config)
+	err = yaml.Unmarshal(data, config)
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
 	}
 
-	fmt.Printf("ConfigFile [%s]\n", configFile)
-	fmt.Printf("DataDir [%s]\n", dataDir)
+	fmt.Printf("LTYPE [%v]\n", config.Type)
+	fmt.Printf("LCONFIG [%v]\n", config)
 
-	cfg := config.NewConfig(configFile)
-
-	fmt.Printf("Type [%s]\n", cfg.Type)
-	fmt.Printf("Config [%v]\n", cfg)
-
-	fmt.Println("+++ rqmgtool This is the End")
+	return config
 }
 
 // Local Variables:

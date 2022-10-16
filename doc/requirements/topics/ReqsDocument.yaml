@@ -1,0 +1,35 @@
+---
+type: topic
+
+name: rqmgtool
+
+subs:
+  - name: Introduction
+    type: topic
+  - name: GUI
+    type: topic
+  - type: text
+    content: >
+      This is the _master_ requirment where all other
+      (especially the initial requirements) depend on. There can only be
+      one master requirment.
+  - name: Basics
+    type: topic
+  - name: ReqTags
+    type: topic
+  - name: Topic
+    type: topic
+  - name: Input
+    type: topic
+  - name: Output
+    type: topic
+  - name: EmacsMode
+    type: topic
+  - name: Documentation
+    type: topic
+  - name: AutoCreationOfArtifacts
+    type: topic
+  - name: Testing
+    type: topic
+  - name: Deployment
+    type: topic

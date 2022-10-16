@@ -1,0 +1,17 @@
+---
+type: requirement
+name: Documentation
+
+invented:
+  on: 2010-02-12
+  by: flonatel
+owner: development
+
+description: _rqmgtool_ __must__ be documented.
+
+status: open
+priority: development:6 customers:5
+effort-estimation: 3
+topic: Documentation
+
+solved-by: DocManPage DocSlides Version

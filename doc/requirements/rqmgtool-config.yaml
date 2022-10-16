@@ -36,11 +36,15 @@ requirements:
     - customers
 
 logging:
-  stdout:
-    loglevel: info
-  tracer:
-    loglevel: info
-    filename: "rqmgtool-trace.log"
+  # This is the zap logging config
+  # https://pkg.go.dev/go.uber.org/zap#Config
+  level: debug
+  development: true
+  #encoding: json
+  encoding: console
+  # encoderConfig cannot be changed.
+  outputPaths:
+    - stderr
 
 output:
   - graph:

@@ -17,47 +17,29 @@
 // You should have received a copy of the GNU General Public License
 // along with rqmgtool.  If not, see <https://www.gnu.org/licenses/>.
 
-package config
+package logging
 
 import (
-	"fmt"
-	"os"
-
-	"gopkg.in/yaml.v3"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
-type RequirementsInputConfig struct {
-	Default_language string
-}
+func InitLog(logConfig zap.Config) *zap.Logger {
+	// It looks that it is not possible to configure
+	// the Encoder just using the config file.
+	// Therefore adapt it here.
+	logConfig.EncoderConfig = zap.NewDevelopmentEncoderConfig()
+	logConfig.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	
+	logger := zap.Must(logConfig.Build())
+	defer logger.Sync()
 
-type RequirementsConfig struct {
-	Input RequirementsInputConfig
-	Inventors []string `yaml:"inventors,flow"`
-	Stakeholders []string `yaml:"stakeholders,flow"`
-}
-
-type Config struct {
-	Type string
-	Requirements RequirementsConfig
-	Logging zap.Config
-}
-
-func NewConfig(configFile string) *Config {
-	data, err := os.ReadFile(configFile)
-	if err != nil {
-		panic(err)
-	}
-
-	config := new(Config)
-	err = yaml.Unmarshal(data, config)
-	if err != nil {
-		fmt.Printf("error: %v\n", err)
-	}
-
-	return config
-}
+	//logger.Info("logger construction succeeded",
+	//	zap.String("url", "http://some.thing.de"))
+	return logger
+}	
 
 // Local Variables:
 // tab-width: 4
 // End:
+	

@@ -25,11 +25,10 @@ import (
 	"os"
 
 	"github.com/florath/rqmgtool/internal/pkg/config"
+	"github.com/florath/rqmgtool/internal/pkg/logging"
 )
 
 func main() {
-	fmt.Println("+++ rqmgtool starting")
-
 	var configFile string
 	var dataDir string
 
@@ -43,15 +42,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("ConfigFile [%s]\n", configFile)
-	fmt.Printf("DataDir [%s]\n", dataDir)
-
 	cfg := config.NewConfig(configFile)
+	log := logging.InitLog(cfg.Logging)
+	log.Info("rqmgtool: Starting")
 
-	fmt.Printf("Type [%s]\n", cfg.Type)
-	fmt.Printf("Config [%v]\n", cfg)
-
-	fmt.Println("+++ rqmgtool This is the End")
+	log.Info("rqmgtool: This is the End")
 }
 
 // Local Variables:

@@ -40,9 +40,22 @@ logging:
   # https://pkg.go.dev/go.uber.org/zap#Config
   level: debug
   development: true
+  # When using json output, the 'levelEncoder' might need
+  # to be changed to 'lowerCase'
   #encoding: json
   encoding: console
-  # encoderConfig cannot be changed.
+  encoderConfig:
+    timeKey: time
+    messageKey: msg
+    levelKey: level
+    nameKey: name
+    callerKey: caller
+    levelEncoder: capitalColor
+    #levelEncoder: lowerCase
+    timeEncoder: iso8601
+    durationEncoder: ms
+    callerEncoder: partial
+    consoleSeparator: ";"
   outputPaths:
     - stderr
 

@@ -21,21 +21,12 @@ package logging
 
 import (
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+//	"go.uber.org/zap/zapcore"
 )
 
 func InitLog(logConfig zap.Config) *zap.Logger {
-	// It looks that it is not possible to configure
-	// the Encoder just using the config file.
-	// Therefore adapt it here.
-	logConfig.EncoderConfig = zap.NewDevelopmentEncoderConfig()
-	logConfig.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	
 	logger := zap.Must(logConfig.Build())
 	defer logger.Sync()
-
-	//logger.Info("logger construction succeeded",
-	//	zap.String("url", "http://some.thing.de"))
 	return logger
 }	
 

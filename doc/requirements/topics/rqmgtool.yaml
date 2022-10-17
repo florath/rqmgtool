@@ -1,5 +1,6 @@
 ---
-type: design-decision
+type: requirement
+subtype: design-decision
 name: rqmgtool
 
 invented:

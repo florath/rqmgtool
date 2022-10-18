@@ -19,32 +19,39 @@
 
 package app
 
-import (
-	"os"
+type DataType int64
 
-	"gopkg.in/yaml.v3"
+const (
+	DTUnknown     DataType = iota
+	DTRequirement
+	DTTopic
 )
 
-type Topic struct {
-	Name string `yaml:"name"`
+var dataTypeToString = map[DataType]string{
+	DTUnknown:      "+++UNKNOWN+++",
+	DTRequirement:  "requirement",
+	DTTopic:        "topic",
 }
 
-func NewTopic(path string) *Topic {
-	topic := new(Topic)
-
-	data, err := os.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-
-	err = yaml.Unmarshal(data, topic)
-	if err != nil {
-		panic(err)
-	}
-	
-	return topic
+var dataTypeToID = map[string]DataType{
+	"requirement": DTRequirement,
+	"topic":       DTTopic,
 }
 
+func (s DataType) String() string {
+	return dataTypeToString[s]
+}
+
+// UnmarshalYAML unmashals a quoted YAML string to the enum value
+func (s *DataType) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var j string
+	err := unmarshal(&j)
+	if err != nil {
+		return err
+	}
+	*s = dataTypeToID[j]
+	return nil
+}
 
 // Local Variables:
 // tab-width: 4

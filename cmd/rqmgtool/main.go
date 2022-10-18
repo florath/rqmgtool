@@ -21,15 +21,13 @@ package main
 
 import (
 	"flag"
-	"path/filepath"
 	"fmt"
 	"os"
 
-	"go.uber.org/zap"
 	"github.com/florath/rqmgtool/internal/pkg/config"
 	"github.com/florath/rqmgtool/internal/pkg/logging"
 
-	// "rqmtapp" "github.com/florath/rqmgtool/internal/app"
+	"github.com/florath/rqmgtool/internal/app"
 )
 
 func main() {
@@ -47,26 +45,15 @@ func main() {
 	}
 
 	cfg := config.NewConfig(configFile)
-	fmt.Println("Logging config")
-	fmt.Println(cfg.Logging)
 	log := logging.InitLog(cfg.Logging)
 	log.Info("rqmgtool: Starting")
 
-	// rmdata := yinput.ReadInput(dataDir)
+	rqmgdata := app.ProcessRqmgData(*log, dataDir)
+
+	fmt.Println("+++ DATA +++")
+	fmt.Println(rqmgdata)
+	fmt.Println("--- DATA ---")
 	
-	err := filepath.Walk(dataDir,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			log.Debug("File",
-				zap.String("path", path),
-				zap.Int64("size", info.Size()))
-			return nil
-		})
-	if err != nil {
-		fmt.Println(err)
-	}
 	log.Info("rqmgtool: This is the End")
 }
 

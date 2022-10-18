@@ -17,9 +17,36 @@
 // You should have received a copy of the GNU General Public License
 // along with rqmgtool.  If not, see <https://www.gnu.org/licenses/>.
 
+package app
+
+import (
+	"os"
+
+	"gopkg.in/yaml.v3"
+)
+
+// Requirement
+
 type Requirement struct {
-	SubType subtype `yaml:"subtype"`
+	SubType ReqSubType `yaml:"subtype"`
 	Name string `yaml:"name"`
+	SolvedBy []string `yaml:"solved-by,flow"`
+}
+
+func NewRequirement(path string) *Requirement {
+	requirement := new(Requirement)
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+
+	err = yaml.Unmarshal(data, requirement)
+	if err != nil {
+		panic(err)
+	}
+	
+	return requirement
 }
 
 // Local Variables:

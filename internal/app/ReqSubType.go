@@ -19,32 +19,42 @@
 
 package app
 
-import (
-	"os"
+type ReqSubType int64
 
-	"gopkg.in/yaml.v3"
+const (
+	RSTDesignDecision ReqSubType = iota
 )
 
-type Topic struct {
-	Name string `yaml:"name"`
+var reqSubTypeToString = map[ReqSubType]string{
+	RSTDesignDecision:  "design-decision",
 }
 
-func NewTopic(path string) *Topic {
-	topic := new(Topic)
-
-	data, err := os.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-
-	err = yaml.Unmarshal(data, topic)
-	if err != nil {
-		panic(err)
-	}
-	
-	return topic
+var reqSubTypeToID = map[string]ReqSubType{
+	"design-decision": RSTDesignDecision,
 }
 
+func (s ReqSubType) String() string {
+	return reqSubTypeToString[s]
+}
+
+// MarshalYAML marshals the enum as a quoted YAML string
+//func (s ReqSubType) MarshalYAML() ([]byte, error) {
+//	buffer := bytes.NewBufferString(`"`)
+//	buffer.WriteString(toString[s])
+//	buffer.WriteString(`"`)
+//	return buffer.Bytes(), nil
+//}
+
+// UnmarshalYAML unmashals a quoted YAML string to the enum value
+func (s *ReqSubType) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var j string
+	err := unmarshal(&j)
+	if err != nil {
+		return err
+	}
+	*s = reqSubTypeToID[j]
+	return nil
+}
 
 // Local Variables:
 // tab-width: 4

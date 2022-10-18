@@ -17,8 +17,30 @@
 // You should have received a copy of the GNU General Public License
 // along with rqmgtool.  If not, see <https://www.gnu.org/licenses/>.
 
-func Read(dirName string) {
+package app
+
+import (
+	"gonum.org/v1/gonum/graph/simple"
+)	
+
+type RequirementGraph struct {
+	*simple.DirectedGraph
 }
+
+func NewRequirementGraph() *RequirementGraph {
+	var reqGraph *RequirementGraph
+	reqGraph = new(RequirementGraph)
+	reqGraph.DirectedGraph = simple.NewDirectedGraph()
+	return reqGraph
+}
+
+
+type RequirementNode struct {
+	id int64
+	*Requirement
+}
+
+func (n RequirementNode) ID() int64 { return n.id }
 
 // Local Variables:
 // tab-width: 4

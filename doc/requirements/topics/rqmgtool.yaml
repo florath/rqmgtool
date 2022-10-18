@@ -16,8 +16,14 @@ rationale: >
   But: it's complex!
 
 status: open
-priority: development:10
+priorities:
+  - development: 10
 effort-estimation: 5
 topic: ReqsDocument
 
-solved-by: Documentation OpenSource Processing Simplicity Testing
+solved-by:
+  - Documentation
+  - OpenSource
+  - Processing
+  - Simplicity
+  - Testing

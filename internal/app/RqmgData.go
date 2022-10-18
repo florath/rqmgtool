@@ -141,7 +141,8 @@ func ProcessRqmgData(log zap.Logger, dataDir string) *RqmgData {
 		for _, to_name := range requirement.SolvedBy {
 			if to_node, ok := reqnodemap[to_name]; ! ok {
 				log.Error("Node with name not found",
-					zap.String("name", to_name))
+					zap.String("name", to_name),
+					zap.String("from", name))
 			} else {
 				new_edge := rqmgdata.Requirements.DirectedGraph.NewEdge(
 					from_node, to_node)

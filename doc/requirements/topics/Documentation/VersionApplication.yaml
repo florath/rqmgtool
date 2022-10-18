@@ -1,0 +1,23 @@
+---
+type: requirement
+subtype: derived
+name: Version for Application
+
+invented:
+  on: 2011-03-14
+  by: flonatel
+owner: development
+
+description: >
+  Version information __must__ be available in all
+  applications. 
+note: >
+  This includes every single script which can be executed. If
+  there is someday a GUI there must be a function to display the
+  version.
+
+status: open
+priorities:
+  - users: 10
+effort-estimation: 3
+topic: Documentation

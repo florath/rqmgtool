@@ -1,0 +1,24 @@
+---
+type: requirement
+subtype: design-decision
+name: Markdown Documentation
+
+invented:
+  on: 2010-02-12
+  by: flonatel
+owner: development
+
+description: >
+  _rmtoo_ __must__ come with a markdown documentation
+  describing the basic behaviour.
+rationale: >
+  This typically describes the input and output and all the
+  parameters needed (but not the ideas behind). Markdown is the
+  up-to-data tool for writing documentation.
+
+status: open
+priorities:
+  - development: 10
+  - customers: 5
+effort-estimation: 5
+topic: Documentation

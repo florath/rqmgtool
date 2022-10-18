@@ -1,5 +1,6 @@
 ---
 type: requirement
+subtype: derived
 name: Documentation
 
 invented:
@@ -17,6 +18,5 @@ effort-estimation: 3
 topic: Documentation
 
 solved-by:
-  - DocManPage
-  - DocSlides
-  - Version
+  - Markdown Documentation
+  - Version Documentation

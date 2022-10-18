@@ -1,0 +1,18 @@
+---
+type: requirement
+subtype: design-decision
+name: Open-Source
+
+invented:
+  on: 2010-02-06
+  by: flonatel
+owner: development
+
+description: _rqmgtool __must__ be Open-Source.
+rationale: >
+  There is the hope, that some people might use this. There
+  is also the hope that there are some people which add the one or
+  other feature.
+
+status: closed
+topic: Basics

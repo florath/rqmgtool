@@ -1,0 +1,22 @@
+---
+type: requirement
+subtype: derived
+name: Version Documentation
+
+invented:
+  on: 2011-03-14
+  by: flonatel
+owner: development
+  
+description: Version information __must__ be available.
+note: This is valid for the documentation and all program files.
+
+status: open
+priorities:
+  - users: 10
+effort-estimation: 5
+topic: Documentation
+
+solved-by:
+  - Version for Documentation
+  - Version for Application

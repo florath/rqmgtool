@@ -1,0 +1,22 @@
+---
+type: requirement
+subtype: derived
+name: Version for Documentation
+
+invented:
+  on: 2011-03-14
+  by: flonatel
+owner: development
+
+description: >
+  Version information __must__ be available in all
+  documents. 
+note: >
+  Documents are: markdown, presentations, requirement documents,
+  graphs, ...
+
+status: open
+priorities:
+  - users: 10
+effort-estimation: 3
+topic: Documentation

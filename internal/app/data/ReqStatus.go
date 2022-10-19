@@ -19,24 +19,30 @@
 
 package data
 
-type ReqSubType int64
+type ReqStatusType int64
 
 const (
-	RSTUnknown        ReqSubType = iota
-	RSTDesignDecision
+	RSTATEUnknown        ReqStatusType = iota
+	RSTATEOpen
+	RSTATEClosed
+	RSTATEAssigned
 )
 
-var reqSubTypeToString = map[ReqSubType]string{
-	RSTUnknown:         "+++UNKNOWN_REQ_SUB_TYPE+++",
-	RSTDesignDecision:  "design-decision",
+var reqStatusTypeToString = map[ReqStatusType]string{
+	RSTATEUnknown:     "+++UNKNOWN_REQ_STATUS_TYPE+++",
+	RSTATEOpen:         "open",
+	RSTATEClosed:       "closed",
+	RSTATEAssigned:     "assigned",
 }
 
-var reqSubTypeToID = map[string]ReqSubType{
-	"design-decision": RSTDesignDecision,
+var reqStatusTypeToID = map[string]ReqStatusType{
+	"open":            RSTATEOpen,
+	"closed":          RSTATEClosed,
+	"assigned":        RSTATEAssigned,
 }
 
-func (s ReqSubType) String() string {
-	return reqSubTypeToString[s]
+func (s ReqStatusType) String() string {
+	return reqStatusTypeToString[s]
 }
 
 // MarshalYAML marshals the enum as a quoted YAML string
@@ -48,13 +54,13 @@ func (s ReqSubType) String() string {
 //}
 
 // UnmarshalYAML unmashals a quoted YAML string to the enum value
-func (s *ReqSubType) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (s *ReqStatusType) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var j string
 	err := unmarshal(&j)
 	if err != nil {
 		return err
 	}
-	*s = reqSubTypeToID[j]
+	*s = reqStatusTypeToID[j]
 	return nil
 }
 

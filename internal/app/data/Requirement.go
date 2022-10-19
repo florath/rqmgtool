@@ -31,6 +31,7 @@ type Requirement struct {
 	SubType ReqSubType `yaml:"subtype"`
 	Name string `yaml:"name"`
 	SolvedBy []string `yaml:"solved-by,flow"`
+	Status ReqStatusType `yaml:"status"`
 }
 
 func NewRequirement(path string) *Requirement {

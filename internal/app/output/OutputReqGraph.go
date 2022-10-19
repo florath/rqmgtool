@@ -22,7 +22,6 @@ package output
 import (
 	"fmt"
 	"os"
-	"reflect"
 	"strings"
 
 	"go.uber.org/zap"
@@ -53,30 +52,57 @@ func RequirementsGraph(log *zap.Logger, rqmgdata *data.RqmgData,
         }
     }()
 
-	fd.Write([]byte("digraph reqdeps {\nrankdir=BT;\nmclimit=10.0;\n"))
+	fd.Write([]byte("digraph reqdeps {\nrankdir=TB;\nmclimit=10.0;\n"))
 	fd.Write([]byte("nslimit=10.0;ranksep=1;\n"))
 
-	if rqmgdata.Requirements.Nodes().Len() > 0 {
-		node_iter := rqmgdata.Requirements.Nodes()
-		for {
-			ok := node_iter.Next()
-			if ! ok {
-				break
-			}
-			node := node_iter.Node()
-			fmt.Println("NODE")
-			fmt.Println(reflect.TypeOf(node))
-			fmt.Println(node)
-			fmt.Println(node_iter)
-			fmt.Printf("%+v\n", node)
-			fmt.Printf("%+v\n", rqmgdata.Requirements.GetReqByID(node.ID()))
-			//fmt.Println(node.Requirement.Name)
-
-			requirement := rqmgdata.Requirements.GetReqByID(node.ID())
-			
-			fd.Write([]byte(dotEscape(requirement.Name)))
-			fd.Write([]byte("\n"))
+	node_iter := rqmgdata.Requirements.Nodes()
+	for {
+		ok := node_iter.Next()
+		if ! ok {
+			break
 		}
+
+		node := node_iter.Node()
+		requirement := rqmgdata.Requirements.GetReqByID(node.ID())
+
+		var nattr string
+		nattr = ""
+
+		if requirement.SubType == data.RSTDesignDecision {
+			nattr += "color=green"
+		}
+		if requirement.Status == data.RSTATEOpen {
+			if len(nattr) > 0 {
+				nattr += ","
+			}
+			nattr += "fontcolor=red"
+		}
+		if requirement.Status == data.RSTATEAssigned {
+			if len(nattr) > 0 {
+				nattr += ","
+			}
+			nattr += ",fontcolor=blue"
+		}
+		
+		fmt.Fprintf(fd, "\"%s\" [%s];\n",
+			dotEscape(requirement.Name), nattr)
+	}
+
+	edge_iter := rqmgdata.Requirements.Edges()
+	for {
+		ok := edge_iter.Next()
+		if ! ok {
+			break
+		}
+
+		edge := edge_iter.Edge()
+		node_from := edge.From()
+		node_to := edge.To()
+		req_from := rqmgdata.Requirements.GetReqByID(node_from.ID())
+		req_to := rqmgdata.Requirements.GetReqByID(node_to.ID())
+
+		fmt.Fprintf(fd, "\"%s\" -> \"%s\";\n",
+			dotEscape(req_from.Name), dotEscape(req_to.Name))
 	}
 	
 	fd.Write([]byte("}\n"))

@@ -60,15 +60,17 @@ logging:
     - stderr
 
 output:
-  - graph:
-      type: plain
+  - type: requirements-graph
+    params:
       ofile: "artifacts/rqmgtool-graph1.dot"
-  - graph:
-      type: topics
+  - type: topics-graph
+    params:
       ofile: "artifacts/rqmgtool-graph2.dot"
-  - html:
+  - type: html
+    params:
       footer: "html/footer.html"
       header: "html/header.html"
       odir: "artifacts/html"
-  - latex:
+  - type: latex
+    params:
       ofile: "artifacts/rqmgtool.tex"

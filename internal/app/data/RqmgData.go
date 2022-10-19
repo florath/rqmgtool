@@ -17,51 +17,23 @@
 // You should have received a copy of the GNU General Public License
 // along with rqmgtool.  If not, see <https://www.gnu.org/licenses/>.
 
-package config
+// The basic structure needed by the tool:
+// * a directed graph (tree) with the master (initial) requirement
+//   at the top
+// * a directed graph (tree) with the master topic at the top
 
-import (
-	"fmt"
-	"os"
+package data
 
-	"gopkg.in/yaml.v3"
-	"go.uber.org/zap"
-)
-
-type RequirementsInputConfig struct {
-	Default_language string
+type RqmgData struct {
+	Requirements *RequirementGraph
+	// Topics *simple.DirectedGraph
 }
 
-type RequirementsConfig struct {
-	Input RequirementsInputConfig
-	Inventors []string `yaml:"inventors,flow"`
-	Stakeholders []string `yaml:"stakeholders,flow"`
-}
-
-type OutputTypeConfig struct {
-	Type string `yaml:"type"`
-	Params map[string]string
-}
-
-type Config struct {
-	Type string
-	Requirements RequirementsConfig
-	Logging zap.Config
-	Output []*OutputTypeConfig `yaml:"output,flow"`
-}
-
-func NewConfig(configFile string) *Config {
-	data, err := os.ReadFile(configFile)
-	if err != nil {
-		panic(err)
-	}
-
-	config := new(Config)
-	err = yaml.Unmarshal(data, config)
-	if err != nil {
-		fmt.Printf("error: %v\n", err)
-	}
-
-	return config
+func NewRqmgData() *RqmgData {
+	var rqmgdata *RqmgData
+	rqmgdata = new(RqmgData)
+	// rqmgdata.Requirements = NewRequirementGraph()
+	return rqmgdata
 }
 
 // Local Variables:

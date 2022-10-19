@@ -35,7 +35,8 @@ func main() {
 	var dataDir string
 
 	flag.StringVar(&configFile, "config", "", "config file name")
-	flag.StringVar(&dataDir, "dataDir", "", "directory of the requirements data")
+	flag.StringVar(&dataDir, "dataDir", "",
+		"directory of the requirements data")
 	flag.Parse()
 
 	if len(configFile) == 0 || len(dataDir) == 0 {
@@ -50,10 +51,13 @@ func main() {
 
 	rqmgdata := app.ProcessRqmgData(*log, dataDir)
 
-	fmt.Println("+++ DATA +++")
+	for _, ovals := range cfg.Output {
+		// app.OutputDelegation(log, oname, ovals)
+		app.OutputDelegation(log, rqmgdata, ovals.Type, ovals.Params)
+	}
+
 	fmt.Println(rqmgdata)
-	fmt.Println("--- DATA ---")
-	
+
 	log.Info("rqmgtool: This is the End")
 }
 

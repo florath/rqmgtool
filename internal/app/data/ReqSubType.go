@@ -17,36 +17,43 @@
 // You should have received a copy of the GNU General Public License
 // along with rqmgtool.  If not, see <https://www.gnu.org/licenses/>.
 
-package app
+package data
 
-import (
-	"os"
+type ReqSubType int64
 
-	"gopkg.in/yaml.v3"
+const (
+	RSTDesignDecision ReqSubType = iota
 )
 
-// Requirement
-
-type Requirement struct {
-	SubType ReqSubType `yaml:"subtype"`
-	Name string `yaml:"name"`
-	SolvedBy []string `yaml:"solved-by,flow"`
+var reqSubTypeToString = map[ReqSubType]string{
+	RSTDesignDecision:  "design-decision",
 }
 
-func NewRequirement(path string) *Requirement {
-	requirement := new(Requirement)
+var reqSubTypeToID = map[string]ReqSubType{
+	"design-decision": RSTDesignDecision,
+}
 
-	data, err := os.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
+func (s ReqSubType) String() string {
+	return reqSubTypeToString[s]
+}
 
-	err = yaml.Unmarshal(data, requirement)
+// MarshalYAML marshals the enum as a quoted YAML string
+//func (s ReqSubType) MarshalYAML() ([]byte, error) {
+//	buffer := bytes.NewBufferString(`"`)
+//	buffer.WriteString(toString[s])
+//	buffer.WriteString(`"`)
+//	return buffer.Bytes(), nil
+//}
+
+// UnmarshalYAML unmashals a quoted YAML string to the enum value
+func (s *ReqSubType) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var j string
+	err := unmarshal(&j)
 	if err != nil {
-		panic(err)
+		return err
 	}
-	
-	return requirement
+	*s = reqSubTypeToID[j]
+	return nil
 }
 
 // Local Variables:

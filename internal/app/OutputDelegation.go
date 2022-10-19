@@ -19,41 +19,25 @@
 
 package app
 
-type ReqSubType int64
-
-const (
-	RSTDesignDecision ReqSubType = iota
+import (
+	"go.uber.org/zap"
+	"github.com/florath/rqmgtool/internal/app/data"
+	"github.com/florath/rqmgtool/internal/app/output"
 )
 
-var reqSubTypeToString = map[ReqSubType]string{
-	RSTDesignDecision:  "design-decision",
-}
+func OutputDelegation(log *zap.Logger, rqmgdata *data.RqmgData, oname string,
+	vals map[string]string) {
 
-var reqSubTypeToID = map[string]ReqSubType{
-	"design-decision": RSTDesignDecision,
-}
+	log.Info("OutputDelegation",
+		zap.String("name", oname))
 
-func (s ReqSubType) String() string {
-	return reqSubTypeToString[s]
-}
-
-// MarshalYAML marshals the enum as a quoted YAML string
-//func (s ReqSubType) MarshalYAML() ([]byte, error) {
-//	buffer := bytes.NewBufferString(`"`)
-//	buffer.WriteString(toString[s])
-//	buffer.WriteString(`"`)
-//	return buffer.Bytes(), nil
-//}
-
-// UnmarshalYAML unmashals a quoted YAML string to the enum value
-func (s *ReqSubType) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var j string
-	err := unmarshal(&j)
-	if err != nil {
-		return err
+	switch oname {
+	case "requirements-graph":
+		output.RequirementsGraph(log, rqmgdata, vals)
+	default:
+		log.Error("Output module not found",
+			zap.String("name", oname))
 	}
-	*s = reqSubTypeToID[j]
-	return nil
 }
 
 // Local Variables:

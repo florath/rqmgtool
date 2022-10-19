@@ -17,30 +17,33 @@
 // You should have received a copy of the GNU General Public License
 // along with rqmgtool.  If not, see <https://www.gnu.org/licenses/>.
 
-package app
+package data
 
 import (
-	"gonum.org/v1/gonum/graph/simple"
-)	
+	"os"
 
-type RequirementGraph struct {
-	*simple.DirectedGraph
+	"gopkg.in/yaml.v3"
+)
+
+type Topic struct {
+	Name string `yaml:"name"`
 }
 
-func NewRequirementGraph() *RequirementGraph {
-	var reqGraph *RequirementGraph
-	reqGraph = new(RequirementGraph)
-	reqGraph.DirectedGraph = simple.NewDirectedGraph()
-	return reqGraph
+func NewTopic(path string) *Topic {
+	topic := new(Topic)
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+
+	err = yaml.Unmarshal(data, topic)
+	if err != nil {
+		panic(err)
+	}
+	
+	return topic
 }
-
-
-type RequirementNode struct {
-	id int64
-	*Requirement
-}
-
-func (n RequirementNode) ID() int64 { return n.id }
 
 // Local Variables:
 // tab-width: 4

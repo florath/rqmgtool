@@ -31,22 +31,11 @@ import (
 	
 	"gopkg.in/yaml.v3"
 	"go.uber.org/zap"
+	"github.com/florath/rqmgtool/internal/app/data"
 )
 
 type TypeChecker struct {
 	Type DataType `yaml:"type"`
-}
-
-type RqmgData struct {
-	Requirements *RequirementGraph
-	// Topics *simple.DirectedGraph
-}
-
-func NewRqmgData() *RqmgData {
-	var rqmgdata *RqmgData
-	rqmgdata = new(RqmgData)
-	rqmgdata.Requirements = NewRequirementGraph()
-	return rqmgdata
 }
 
 func filterFile(log zap.Logger, path string, info os.FileInfo) bool {
@@ -79,14 +68,33 @@ func peekType(path string) *TypeChecker {
 	return typeChecker
 }
 
-func ProcessRqmgData(log zap.Logger, dataDir string) *RqmgData {
-	rqmgdata := NewRqmgData()
+func generateRequirementsGraph(
+	log zap.Logger,
+	reqnamesmap map[string]*data.Requirement) *data.RequirementGraph {
 
-	var reqnamesmap map[string]*Requirement
-	reqnamesmap = make(map[string]*Requirement)
+	var reqGraph *data.RequirementGraph
+	reqGraph = data.NewRequirementGraph()
 
+	// Place all the nodes in the graph
+	for name, requirement := range reqnamesmap {
+		new_id := reqGraph.AddRequirement(requirement)
+		log.Debug("Add node to requirement graph",
+			zap.String("name", name),
+			zap.Int64("id", new_id))
+	}
 
-	var topics []*Topic
+	reqGraph.CreateAllEdges(&log)
+	
+	return reqGraph
+}
+
+func ProcessRqmgData(log zap.Logger, dataDir string) *data.RqmgData {
+	rqmgdata := data.NewRqmgData()
+
+	var reqnamesmap map[string]*data.Requirement
+	reqnamesmap = make(map[string]*data.Requirement)
+
+	var topics []*data.Topic
 	
 	err := filepath.Walk(dataDir,
 		func(path string, info os.FileInfo, err error) error {
@@ -102,11 +110,10 @@ func ProcessRqmgData(log zap.Logger, dataDir string) *RqmgData {
 
 			switch fileType.Type {
 			case DTRequirement:
-				nreq := NewRequirement(path)
-				// requirements = append(requirements, nreq)
+				nreq := data.NewRequirement(path)
 				reqnamesmap[nreq.Name] = nreq
 			case DTTopic:
-				topics = append(topics, NewTopic(path))
+				topics = append(topics, data.NewTopic(path))
 			}
 
 			log.Info("typeChecker",
@@ -120,47 +127,7 @@ func ProcessRqmgData(log zap.Logger, dataDir string) *RqmgData {
 		fmt.Println(err)
 	}
 
-	var reqnodemap map[string]*RequirementNode
-	reqnodemap = make(map[string]*RequirementNode)
-
-	// Place all the nodes in the graph
-	for name, requirement := range reqnamesmap {
-		dnode := rqmgdata.Requirements.DirectedGraph.NewNode()
-		node := RequirementNode{id: dnode.ID(), Requirement: requirement}
-		rqmgdata.Requirements.AddNode(node)
-		reqnodemap[requirement.Name] = &node
-		log.Debug("Add node to requirement graph",
-			zap.String("name", name),
-			zap.Int64("id", dnode.ID()))
-	}
-
-	// Add the edges
-	for name, requirement := range reqnamesmap {
-		from_node := reqnodemap[name]
-
-		for _, to_name := range requirement.SolvedBy {
-			if to_node, ok := reqnodemap[to_name]; ! ok {
-				log.Error("Node with name not found",
-					zap.String("name", to_name),
-					zap.String("from", name))
-			} else {
-				new_edge := rqmgdata.Requirements.DirectedGraph.NewEdge(
-					from_node, to_node)
-				rqmgdata.Requirements.DirectedGraph.SetEdge(new_edge)
-				log.Debug("Add edge",
-					zap.String("from", name),
-					zap.String("to", to_node.Requirement.Name))
-			}
-		}
-	}
-
-	fmt.Println("------------------")
-	fmt.Printf("%#v\n", *rqmgdata.Requirements)
-	fmt.Printf("Number of nodes [%d]\n",
-		rqmgdata.Requirements.DirectedGraph.Nodes().Len())
-	fmt.Println("..................")
-	fmt.Println(reqnodemap)
-	fmt.Println("++++++++++++++++++")
+	rqmgdata.Requirements = generateRequirementsGraph(log, reqnamesmap)
 
 	return rqmgdata
 }
